@@ -1,0 +1,7 @@
+{
+    "moodle-ousupsub_superscript-button": {
+        "requires": [
+            "moodle-editor_ousupsub-plugin"
+        ]
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "name": "moodle-ousupsub_superscript-button",
+    "builds": {
+        "moodle-ousupsub_superscript-button": {
+            "jsfiles": [
+                "button.js"
+            ]
+        }
+    }
+}

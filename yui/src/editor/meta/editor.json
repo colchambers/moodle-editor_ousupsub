@@ -1,0 +1,48 @@
+{
+    "moodle-editor_ousupsub-editor": {
+        "requires": [
+            "node",
+            "transition",
+            "io",
+            "overlay",
+            "escape",
+            "event",
+            "event-simulate",
+            "event-custom",
+            "yui-throttle",
+            "moodle-core-notification-dialogue",
+            "moodle-core-notification-confirm",
+            "moodle-editor_ousupsub-manager",
+            "moodle-editor_ousupsub-rangy",
+            "handlebars",
+            "timers"
+        ]
+    },
+    "moodle-editor_ousupsub-plugin": {
+        "requires": [
+            "node",
+            "base",
+            "escape",
+            "event",
+            "event-outside",
+            "handlebars",
+            "event-custom",
+            "timers"
+        ]
+    },
+    "moodle-editor_ousupsub-menu": {
+        "requires": [
+            "moodle-core-notification-dialogue",
+            "node",
+            "event",
+            "event-custom"
+        ]
+    },
+    "moodle-editor_ousupsub-manager": {
+        "requires": [
+            "base",
+            "moodle-editor_ousupsub-editor"
+        ]
+        
+    }
+}

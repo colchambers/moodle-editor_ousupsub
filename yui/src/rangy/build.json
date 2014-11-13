@@ -1,0 +1,18 @@
+{
+  "name": "moodle-editor_ousupsub-rangy",
+  "builds": {
+    "moodle-editor_ousupsub-rangy": {
+      "prependfiles": [
+        "rangy-core.js",
+        "rangy-cssclassapplier.js",
+        "rangy-serializer.js"
+      ],
+      "jsfiles": [
+        "init.js"
+      ]
+    }
+  },
+  "shifter": {
+    "lint": false
+  }
+}
