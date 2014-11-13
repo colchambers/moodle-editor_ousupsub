@@ -1,0 +1,30 @@
+{
+    "name": "moodle-editor_ousupsub-editor",
+    "builds": {
+        "moodle-editor_ousupsub-editor": {
+            "jsfiles": [
+                "editor.js",
+                "notify.js",
+                "textarea.js",
+                "clean.js",
+                "toolbar.js",
+                "toolbar-keyboardnav.js",
+                "selection.js",
+                "styling.js",
+                "filepicker.js"
+            ]
+        },
+        "moodle-editor_ousupsub-plugin": {
+            "jsfiles": [
+                "editor-plugin.js",
+                "editor-plugin-buttons.js",
+                "editor-plugin-dialogue.js"
+            ]
+        },
+        "moodle-editor_ousupsub-menu": {
+            "jsfiles": [
+                "menu.js"
+            ]
+        }
+    }
+}
