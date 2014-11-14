@@ -76,7 +76,7 @@ class ousupsub_texteditor extends texteditor {
     public function use_editor($elementid, array $options=null, $fpoptions=null) {
         global $PAGE;
 
-        $configstr = get_config('editor_ousupsub', 'toolbar');
+        $configstr = 'style1 = subscript, superscript';
 
         $grouplines = explode("\n", $configstr);
 

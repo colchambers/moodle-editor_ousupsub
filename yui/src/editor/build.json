@@ -10,8 +10,7 @@
                 "toolbar.js",
                 "toolbar-keyboardnav.js",
                 "selection.js",
-                "styling.js",
-                "filepicker.js"
+                "styling.js"
             ]
         },
         "moodle-editor_ousupsub-plugin": {

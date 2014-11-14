@@ -44,7 +44,6 @@ var CSS = {
  * @class Editor
  * @constructor
  * @uses M.editor_ousupsub.EditorClean
- * @uses M.editor_ousupsub.EditorFilepicker
  * @uses M.editor_ousupsub.EditorSelection
  * @uses M.editor_ousupsub.EditorStyling
  * @uses M.editor_ousupsub.EditorTextArea

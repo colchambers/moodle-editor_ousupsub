@@ -57,6 +57,30 @@ class behat_editor_ousupsub extends behat_base {
         $field->select_text();
     }
 
+    /**
+     * Check the text in an ousupsub field.
+     *
+     * @Given /^I should see "([^"]*)" in the "([^"]*)" ousupsub editor$/
+     * @throws ElementNotFoundException Thrown by behat_base::find
+     * * @param string $text
+     * @param string $field
+     * @return void
+     */
+    public function should_see_in_the_ousupsub_editor($text, $fieldlocator) {
+        if (!$this->running_javascript()) {
+            throw new coding_exception('Selecting text requires javascript.');
+        }
+        // We delegate to behat_form_field class, it will
+        // guess the type properly.
+        $field = behat_field_manager::get_form_field_from_label($fieldlocator, $this);
+
+        if (!method_exists($field, 'get_value')) {
+            throw new coding_exception('Field does not support the get_value function.');
+        }
+
+        return $field->matches($text);
+    }
+
 
 }
 
