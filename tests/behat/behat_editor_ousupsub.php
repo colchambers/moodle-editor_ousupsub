@@ -62,7 +62,7 @@ class behat_editor_ousupsub extends behat_base {
      *
      * @Given /^I should see "([^"]*)" in the "([^"]*)" ousupsub editor$/
      * @throws ElementNotFoundException Thrown by behat_base::find
-     * * @param string $text
+     * @param string $text
      * @param string $field
      * @return void
      */
@@ -79,6 +79,44 @@ class behat_editor_ousupsub extends behat_base {
         }
 
         return $field->matches($text);
+    }
+
+    /**
+     * Select the given text in an ousupsub field.
+     *
+     * @Given /^I select text "([^"]*)" in the "([^"]*)" ousupsub editor$/
+     * @throws ElementNotFoundException Thrown by behat_base::find
+     * @param string $text
+     * @param string $field
+     * @return void
+     */
+    public function select_text_in_the_ousupsub_editor($text, $fieldlocator) {
+        // NodeElement.keyPress simply doesn't work.
+        if (!$this->running_javascript()) {
+            throw new coding_exception('Selecting text requires javascript.');
+        }
+        // We delegate to behat_form_field class, it will
+        // guess the type properly.
+        $field = behat_field_manager::get_form_field_from_label($fieldlocator, $this);
+
+        if (!method_exists($field, 'get_value')) {
+            throw new coding_exception('Field does not support the get_value function.');
+        }
+
+        $editorid = $field->get_id();
+        $js = ' (function() {
+    var e = document.getElementById("'.$editorid.'editable"),
+        r = rangy.createRange(),
+        s = rangy.getSelection();
+
+    while ((e.firstChild !== null) && (e.firstChild.nodeType != document.TEXT_NODE)) {
+        e = e.firstChild;
+    }
+    e.focus();
+    r.selectNodeContents(e);
+    s.setSingleRange(r);
+}()); ';
+        $field->execute_script($js);
     }
 
 
