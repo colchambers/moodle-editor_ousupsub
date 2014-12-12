@@ -95,6 +95,11 @@ Y.extend(Menu, M.core.dialogue, {
 
         this._setupHandlers();
     },
+    
+    destructor: function() {
+        // Detach all EventHandles.
+        new Y.EventHandle(this._menuHandlers).detach();
+    },
 
     /**
      * Setup the Event handlers.

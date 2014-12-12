@@ -167,6 +167,9 @@ Y.extend(Editor, Y.Base, {
             return;
         }
 
+        // Add the editor to the manager.
+        YUI.M.editor_ousupsub.addEditorReference(this.get('elementid'), this);
+
         this._eventHandles = [];
 
         this._wrapper = Y.Node.create('<div class="' + CSS.WRAPPER + '" />');
@@ -238,6 +241,24 @@ Y.extend(Editor, Y.Base, {
         this.setupNotifications();
     },
 
+    destructor: function() {
+        // Destroy each of the plugins - they may have destruction phases.
+        Y.Array.each(this.plugins, function(item, key) {
+            item.destroy();
+            this.plugins[key] = undefined;
+        }, this);
+
+        // Clear any event handles we created.
+        new Y.EventHandle(this._eventHandles).detach();
+
+        // Return the editor back to it's original state.
+        this.textarea.show();
+        this._wrapper.remove(true);
+
+        // Finally remove this reference from the manager.
+        YUI.M.editor_ousupsub.removeEditorReference(this.get('elementid'), this);
+    },
+        
     /**
      * Focus on the editable area for this editor.
      *
@@ -446,5 +467,7 @@ Y.namespace('M.editor_ousupsub').Editor = Editor;
 
 // Function for Moodle's initialisation.
 Y.namespace('M.editor_ousupsub.Editor').init = function(config) {
-    return new Y.M.editor_ousupsub.Editor(config);
+    Y.log("Y.M.editor_ousupsub.Editor.init has been deprecated since Moodle 2.8." +
+            "Please use YUI.M.editor_ousupsub.createEditor instead", "warn", LOGNAME);
+    return YUI.M.editor_ousupsub.createEditor(config);
 };

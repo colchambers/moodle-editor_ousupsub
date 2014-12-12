@@ -167,6 +167,9 @@ Y.extend(Editor, Y.Base, {
             return;
         }
 
+        // Add the editor to the manager.
+        YUI.M.editor_ousupsub.addEditorReference(this.get('elementid'), this);
+
         this._eventHandles = [];
 
         this._wrapper = Y.Node.create('<div class="' + CSS.WRAPPER + '" />');
@@ -238,6 +241,24 @@ Y.extend(Editor, Y.Base, {
         this.setupNotifications();
     },
 
+    destructor: function() {
+        // Destroy each of the plugins - they may have destruction phases.
+        Y.Array.each(this.plugins, function(item, key) {
+            item.destroy();
+            this.plugins[key] = undefined;
+        }, this);
+
+        // Clear any event handles we created.
+        new Y.EventHandle(this._eventHandles).detach();
+
+        // Return the editor back to it's original state.
+        this.textarea.show();
+        this._wrapper.remove(true);
+
+        // Finally remove this reference from the manager.
+        YUI.M.editor_ousupsub.removeEditorReference(this.get('elementid'), this);
+    },
+        
     /**
      * Focus on the editable area for this editor.
      *
@@ -445,7 +466,7 @@ Y.namespace('M.editor_ousupsub').Editor = Editor;
 
 // Function for Moodle's initialisation.
 Y.namespace('M.editor_ousupsub.Editor').init = function(config) {
-    return new Y.M.editor_ousupsub.Editor(config);
+    return YUI.M.editor_ousupsub.createEditor(config);
 };
 // This file is part of Moodle - http://moodle.org/
 //
@@ -958,15 +979,15 @@ EditorToolbarNav.prototype = {
      */
     setupToolbarNavigation: function() {
         // Listen for Arrow left and Arrow right keys.
-        this._wrapper.delegate('key',
+        this._registerEventHandle(this._wrapper.delegate('key',
                 this.toolbarKeyboardNavigation,
                 'down:37,39',
                 '.' + CSS.TOOLBAR,
-                this);
-        this._wrapper.delegate('focus',
+                this));
+        this._registerEventHandle(this._wrapper.delegate('focus',
                 function(e) {
                     this._setTabFocus(e.currentTarget);
-                }, '.' + CSS.TOOLBAR + ' button', this);
+                }, '.' + CSS.TOOLBAR + ' button', this));
 
         return this;
     },
@@ -1185,35 +1206,35 @@ EditorSelection.prototype = {
      */
     setupSelectionWatchers: function() {
         // Save the selection when a change was made.
-        this.on('ousupsub:selectionchanged', this.saveSelection, this);
+        this._registerEventHandle(this.on('ousupsub:selectionchanged', this.saveSelection, this));
 
-        this.editor.on('focus', this.restoreSelection, this);
+        this._registerEventHandle(this.editor.on('focus', this.restoreSelection, this));
 
         // Do not restore selection when focus is from a click event.
-        this.editor.on('mousedown', function() {
+        this._registerEventHandle(this.editor.on('mousedown', function() {
             this._focusFromClick = true;
-        }, this);
+        }, this));
 
         // Copy the current value back to the textarea when focus leaves us and save the current selection.
-        this.editor.on('blur', function() {
+        this._registerEventHandle(this.editor.on('blur', function() {
             // Clear the _focusFromClick value.
             this._focusFromClick = false;
 
             // Update the original text area.
             this.updateOriginal();
-        }, this);
+        }, this));
 
-        Y.delegate(['keyup', 'focus'], function(e) {
+        this._registerEventHandle(this.editor.on(['keyup', 'focus'], function(e) {
                 Y.soon(Y.bind(this._hasSelectionChanged, this, e));
-            }, document.body, '#' + this.editor.get('id'), this);
+            }, this));
 
         // To capture both mouseup and touchend events, we need to track the gesturemoveend event in standAlone mode. Without
         // standAlone, it will only fire if we listened to a gesturemovestart too.
-        Y.delegate('gesturemoveend', function(e) {
+        this._registerEventHandle(this.editor.on('gesturemoveend', function(e) {
                 Y.soon(Y.bind(this._hasSelectionChanged, this, e));
-            }, document.body, '#' + this.editor.get('id'), {
+            }, {
                 standAlone: true
-            }, this);
+            }, this));
 
         return this;
     },
@@ -1745,6 +1766,7 @@ Y.Base.mix(Y.M.editor_ousupsub.Editor, [EditorStyling]);
         "yui-throttle",
         "moodle-core-notification-dialogue",
         "moodle-core-notification-confirm",
+        "moodle-editor_ousupsub-manager",
         "moodle-editor_ousupsub-rangy",
         "handlebars",
         "timers"

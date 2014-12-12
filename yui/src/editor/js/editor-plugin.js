@@ -69,6 +69,14 @@ Y.extend(EditorPlugin, Y.Base, {
      */
     toolbar: null,
 
+    /**
+     * Event Handles to clear on plugin destruction.
+     *
+     * @property _eventHandles
+     * @private
+     */
+    _eventHandles: null,
+
     initializer: function(config) {
         // Set the references to configuration parameters.
         this.name = config.name;
@@ -85,6 +93,12 @@ Y.extend(EditorPlugin, Y.Base, {
         this._buttonHandlers = [];
         this._menuHideHandlers = [];
         this._highlightQueue = {};
+        this._eventHandles = [];
+    },
+
+    destructor: function() {
+        // Detach all EventHandles.
+        new Y.EventHandle(this._eventHandles).detach();
     },
 
     /**
@@ -101,6 +115,16 @@ Y.extend(EditorPlugin, Y.Base, {
         this.get('host').saveSelection();
 
         return this.get('host').updateOriginal();
+    },
+
+    /**
+     * Register an event handle for disposal in the destructor.
+     *
+     * @method registerEventHandle
+     * @param {EventHandle} The Event Handle as returned by Y.on, and Y.delegate.
+     */
+    registerEventHandle: function(handle) {
+        this._eventHandles.push(handle);
     }
 }, {
     NAME: 'editorPlugin',

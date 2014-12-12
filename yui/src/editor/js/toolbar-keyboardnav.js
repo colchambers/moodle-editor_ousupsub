@@ -51,15 +51,15 @@ EditorToolbarNav.prototype = {
      */
     setupToolbarNavigation: function() {
         // Listen for Arrow left and Arrow right keys.
-        this._wrapper.delegate('key',
+        this._registerEventHandle(this._wrapper.delegate('key',
                 this.toolbarKeyboardNavigation,
                 'down:37,39',
                 '.' + CSS.TOOLBAR,
-                this);
-        this._wrapper.delegate('focus',
+                this));
+        this._registerEventHandle(this._wrapper.delegate('focus',
                 function(e) {
                     this._setTabFocus(e.currentTarget);
-                }, '.' + CSS.TOOLBAR + ' button', this);
+                }, '.' + CSS.TOOLBAR + ' button', this));
 
         return this;
     },

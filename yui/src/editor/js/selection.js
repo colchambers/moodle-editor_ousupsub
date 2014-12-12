@@ -72,35 +72,35 @@ EditorSelection.prototype = {
      */
     setupSelectionWatchers: function() {
         // Save the selection when a change was made.
-        this.on('ousupsub:selectionchanged', this.saveSelection, this);
+        this._registerEventHandle(this.on('ousupsub:selectionchanged', this.saveSelection, this));
 
-        this.editor.on('focus', this.restoreSelection, this);
+        this._registerEventHandle(this.editor.on('focus', this.restoreSelection, this));
 
         // Do not restore selection when focus is from a click event.
-        this.editor.on('mousedown', function() {
+        this._registerEventHandle(this.editor.on('mousedown', function() {
             this._focusFromClick = true;
-        }, this);
+        }, this));
 
         // Copy the current value back to the textarea when focus leaves us and save the current selection.
-        this.editor.on('blur', function() {
+        this._registerEventHandle(this.editor.on('blur', function() {
             // Clear the _focusFromClick value.
             this._focusFromClick = false;
 
             // Update the original text area.
             this.updateOriginal();
-        }, this);
+        }, this));
 
-        Y.delegate(['keyup', 'focus'], function(e) {
+        this._registerEventHandle(this.editor.on(['keyup', 'focus'], function(e) {
                 Y.soon(Y.bind(this._hasSelectionChanged, this, e));
-            }, document.body, '#' + this.editor.get('id'), this);
+            }, this));
 
         // To capture both mouseup and touchend events, we need to track the gesturemoveend event in standAlone mode. Without
         // standAlone, it will only fire if we listened to a gesturemovestart too.
-        Y.delegate('gesturemoveend', function(e) {
+        this._registerEventHandle(this.editor.on('gesturemoveend', function(e) {
                 Y.soon(Y.bind(this._hasSelectionChanged, this, e));
-            }, document.body, '#' + this.editor.get('id'), {
+            }, {
                 standAlone: true
-            }, this);
+            }, this));
 
         return this;
     },

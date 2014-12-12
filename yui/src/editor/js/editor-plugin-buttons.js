@@ -111,15 +111,6 @@ EditorPluginButtons.prototype = {
     ENABLED: 1,
 
     /**
-     * The list of Event Handlers for buttons.
-     *
-     * @property _buttonHandlers
-     * @protected
-     * @type array
-     */
-    _buttonHandlers: null,
-
-    /**
      * Hide handlers which are cancelled when the menu is hidden.
      *
      * @property _menuHideHandlers
@@ -227,7 +218,7 @@ EditorPluginButtons.prototype = {
         config = this._normalizeCallback(config);
 
         // Add the standard click handler to the button.
-        this._buttonHandlers.push(
+        this.registerEventHandle(
             this.toolbar.delegate('click', config.callback, '.' + buttonClass, this)
         );
 
@@ -254,7 +245,7 @@ EditorPluginButtons.prototype = {
             if (typeof config.tagMatchRequiresAll === 'boolean') {
                 tagMatchRequiresAll = config.tagMatchRequiresAll;
             }
-            this._buttonHandlers.push(
+            this.registerEventHandle(
                 host.on(['ousupsub:selectionchanged', 'change'], function(e) {
                     if (typeof this._highlightQueue[config.buttonName] !== 'undefined') {
                         this._highlightQueue[config.buttonName].cancel();
@@ -388,7 +379,7 @@ EditorPluginButtons.prototype = {
         }
 
         // Add the standard click handler to the menu.
-        this._buttonHandlers.push(
+        this.registerEventHandle(
             this.toolbar.delegate('click', this._showToolbarMenu, '.' + buttonClass, this, config),
             this.toolbar.delegate('key', this._showToolbarMenuAndFocus, '40, 32, enter', '.' + buttonClass, this, config)
         );
@@ -678,7 +669,7 @@ EditorPluginButtons.prototype = {
 
         }
 
-        this._buttonHandlers.push(
+        this.registerEventHandle(
             this.editor.delegate(
                 eventtype,
                 callback,

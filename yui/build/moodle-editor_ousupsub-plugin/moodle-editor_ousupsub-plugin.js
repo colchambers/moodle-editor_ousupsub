@@ -71,6 +71,14 @@ Y.extend(EditorPlugin, Y.Base, {
      */
     toolbar: null,
 
+    /**
+     * Event Handles to clear on plugin destruction.
+     *
+     * @property _eventHandles
+     * @private
+     */
+    _eventHandles: null,
+
     initializer: function(config) {
         // Set the references to configuration parameters.
         this.name = config.name;
@@ -87,6 +95,12 @@ Y.extend(EditorPlugin, Y.Base, {
         this._buttonHandlers = [];
         this._menuHideHandlers = [];
         this._highlightQueue = {};
+        this._eventHandles = [];
+    },
+
+    destructor: function() {
+        // Detach all EventHandles.
+        new Y.EventHandle(this._eventHandles).detach();
     },
 
     /**
@@ -103,6 +117,16 @@ Y.extend(EditorPlugin, Y.Base, {
         this.get('host').saveSelection();
 
         return this.get('host').updateOriginal();
+    },
+
+    /**
+     * Register an event handle for disposal in the destructor.
+     *
+     * @method registerEventHandle
+     * @param {EventHandle} The Event Handle as returned by Y.on, and Y.delegate.
+     */
+    registerEventHandle: function(handle) {
+        this._eventHandles.push(handle);
     }
 }, {
     NAME: 'editorPlugin',
@@ -260,15 +284,6 @@ EditorPluginButtons.prototype = {
     ENABLED: 1,
 
     /**
-     * The list of Event Handlers for buttons.
-     *
-     * @property _buttonHandlers
-     * @protected
-     * @type array
-     */
-    _buttonHandlers: null,
-
-    /**
      * Hide handlers which are cancelled when the menu is hidden.
      *
      * @property _menuHideHandlers
@@ -376,7 +391,7 @@ EditorPluginButtons.prototype = {
         config = this._normalizeCallback(config);
 
         // Add the standard click handler to the button.
-        this._buttonHandlers.push(
+        this.registerEventHandle(
             this.toolbar.delegate('click', config.callback, '.' + buttonClass, this)
         );
 
@@ -403,7 +418,7 @@ EditorPluginButtons.prototype = {
             if (typeof config.tagMatchRequiresAll === 'boolean') {
                 tagMatchRequiresAll = config.tagMatchRequiresAll;
             }
-            this._buttonHandlers.push(
+            this.registerEventHandle(
                 host.on(['ousupsub:selectionchanged', 'change'], function(e) {
                     if (typeof this._highlightQueue[config.buttonName] !== 'undefined') {
                         this._highlightQueue[config.buttonName].cancel();
@@ -535,7 +550,7 @@ EditorPluginButtons.prototype = {
         }
 
         // Add the standard click handler to the menu.
-        this._buttonHandlers.push(
+        this.registerEventHandle(
             this.toolbar.delegate('click', this._showToolbarMenu, '.' + buttonClass, this, config),
             this.toolbar.delegate('key', this._showToolbarMenuAndFocus, '40, 32, enter', '.' + buttonClass, this, config)
         );
@@ -825,7 +840,7 @@ EditorPluginButtons.prototype = {
 
         }
 
-        this._buttonHandlers.push(
+        this.registerEventHandle(
             this.editor.delegate(
                 eventtype,
                 callback,

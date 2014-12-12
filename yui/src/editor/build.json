@@ -24,6 +24,12 @@
             "jsfiles": [
                 "menu.js"
             ]
+        },
+        "moodle-editor_ousupsub-manager": {
+            "jsfiles": [
+                "manager.js"
+                
+            ]
         }
     }
 }
