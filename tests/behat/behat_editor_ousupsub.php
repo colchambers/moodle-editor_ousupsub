@@ -24,6 +24,7 @@
  */
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
+use Behat\Mink\Exception\ExpectationException as ExpectationException;
 
 /**
  * Steps definitions to deal with the ousupsub text editor
@@ -78,19 +79,21 @@ class behat_editor_ousupsub extends behat_base {
             throw new coding_exception('Field does not support the get_value function.');
         }
 
-        return $field->matches($text);
+        if(!$field->matches($text)) {
+            throw new ExpectationException("The field '".$fieldlocator."' does not contain the text '".$text."'.", $this->getSession());
+        }
     }
 
     /**
-     * Select the given text in an ousupsub field.
+     * Select the given range in an ousupsub field.
      *
-     * @Given /^I select text "([^"]*)" in the "([^"]*)" ousupsub editor$/
+     * @Given /^I select the range "([^"]*)" in the "([^"]*)" ousupsub editor$/
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $text
      * @param string $field
      * @return void
      */
-    public function select_text_in_the_ousupsub_editor($text, $fieldlocator) {
+    public function select_range_in_the_ousupsub_editor($range, $fieldlocator) {
         // NodeElement.keyPress simply doesn't work.
         if (!$this->running_javascript()) {
             throw new coding_exception('Selecting text requires javascript.');
@@ -103,20 +106,37 @@ class behat_editor_ousupsub extends behat_base {
             throw new coding_exception('Field does not support the get_value function.');
         }
 
-        $editorid = $field->get_id();
-        $js = ' (function() {
-    var e = document.getElementById("'.$editorid.'editable"),
-        r = rangy.createRange(),
-        s = rangy.getSelection();
+        $editorid = $this->find_field($fieldlocator)->getAttribute('id');
 
-    while ((e.firstChild !== null) && (e.firstChild.nodeType != document.TEXT_NODE)) {
-        e = e.firstChild;
-    }
+        // Get query values for the range
+        list($startquery, $startoffset, $endquery, $endoffset) = explode(",", $range);
+//         $js = ' (function() {
+           $js = ' function RangySelectTextBehat () {
+    var id = \''.$editorid.'\', startquery = '.$startquery.', startoffset = '.$startoffset.',
+        endquery  = '.$endquery.', endoffset = '.$endoffset.';
+    var e = document.getElementById(id+"editable"),
+        r = rangy.createRange();
+
     e.focus();
-    r.selectNodeContents(e);
+    if(startquery || startoffset || endquery || endoffset) {
+        // Set defaults for testing.
+        startoffset = startoffset?startoffset:0;
+        endoffset = endoffset?endoffset:0;
+
+        // Find the text nodes from the Start/end queries or default to the editor node.
+        var startnode = startquery?e.querySelector(startquery): e.firstChild;
+        var endnode = endquery?e.querySelector(endquery):e.firstChild;
+        r.setStart(startnode.firstChild, startoffset);
+        r.setEnd(endnode.firstChild, endoffset);
+    }
+    else {
+        r.selectNodeContents(e.firstChild);
+    }
+    var s = rangy.getSelection();
     s.setSingleRange(r);
-}()); ';
-        $field->execute_script($js);
+    YUI.M.editor_ousupsub.getEditor(id)._selections = [r];
+}; RangySelectTextBehat ();';
+        $this->getSession()->executeScript($js);
     }
 
 
