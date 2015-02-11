@@ -60,7 +60,7 @@ M.util.get_string = function(identifier, component, a) {
     if (!M.str.hasOwnProperty(component) || !M.str[component].hasOwnProperty(identifier)) {
         stringvalue = '[[' + identifier + ',' + component + ']]';
         if (M.cfg.developerdebug) {
-            Y.log('undefined string ' + stringvalue, 'warn', 'M.util.get_string');
+            console.log('undefined string ' + stringvalue, 'warn', 'M.util.get_string');
         }
         return stringvalue;
     }
@@ -83,7 +83,7 @@ M.util.get_string = function(identifier, component, a) {
         for (var key in a) {
             if (typeof a[key] != 'number' && typeof a[key] != 'string') {
                 if (M.cfg.developerdebug) {
-                    Y.log('invalid value type for $a->' + key, 'warn', 'M.util.get_string');
+                    console.log('invalid value type for $a->' + key, 'warn', 'M.util.get_string');
                 }
                 continue;
             }
@@ -96,7 +96,7 @@ M.util.get_string = function(identifier, component, a) {
     }
 
     if (M.cfg.developerdebug) {
-        Y.log('incorrect placeholder type', 'warn', 'M.util.get_string');
+        console.log('incorrect placeholder type', 'warn', 'M.util.get_string');
     }
     return stringvalue;
 };
@@ -130,3 +130,30 @@ function RangySelectText (id, startquery, startoffset, endquery, endoffset) {
         s.setSingleRange(r);
         YUI.M.editor_ousupsub.getEditor(id)._selections = [r];
 }
+
+/**
+ * Translate YUI methods and constants to standard javascript or jQuery equivalents. 
+ * While we discover how to translate YUI to standard JS and jQuery we are minimising the changes
+ * to the existing ousupsub codebase. 
+ * 
+ * To do this we are creating an empty YUI Y object and adding the properties and methods that 
+ * OUsupsub requires that need to be translated. This keeps the changes solely to this file simplifying 
+ * the process of updating the plugin to the latest Moodle and ATTO standards.
+ * 
+ * So the code will act as though it is using YUI but in reality it use which every JS implementation
+ * is appropriate.
+ */
+/**
+ * Create Y if it doesn't exist.
+ */
+var Y = Y || {};
+/**
+ * Various utility functions
+ */
+Y.UA = Y.UA || {};
+
+
+/**
+ *  Y.UA.ie is often relied upon.
+ */
+Y.UA.ie = jQuery.browser.msie ? parseFloat(jQuery.browser.version):0 
