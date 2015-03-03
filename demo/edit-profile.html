@@ -69,7 +69,9 @@ M.str = {"moodle":{"error":"Error","morehelp":"More help","changesmadereallygoaw
 
 <script type="text/javascript">
 //<![CDATA[
-YUI().use('node', function(Y) {
+var Y = YUI();
+var O = OU();
+OU().use('node', function(Y) {
 Y.use("moodle-editor_ousupsub-editor","moodle-ousupsub_subscript-button","moodle-ousupsub_superscript-button",function() {YUI.M.editor_ousupsub.createEditor(
 {"elementid":"id_description_editor","content_css":"","contextid":0,"language":"en","directionality":"ltr","plugins":[{"group":"style1","plugins":[{"name":"subscript","params":[]},{"name":"superscript","params":[]}]}],"pageHash":""});
 });

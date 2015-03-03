@@ -143,17 +143,165 @@ function RangySelectText (id, startquery, startoffset, endquery, endoffset) {
  * So the code will act as though it is using YUI but in reality it use which every JS implementation
  * is appropriate.
  */
-/**
- * Create Y if it doesn't exist.
- */
-var Y = Y || {};
+var YUI_ORIGINAL;
+if (typeof YUI != 'undefined') {
+    YUI_ORIGINAL = YUI;
+}
+var YUI = YUI || {};
+
 /**
  * Various utility functions
  */
-Y.UA = Y.UA || {};
+YUI.Env = YUI.Env || {};
 
+/**
+ *  YUI.Env.UA is often relied upon.
+ */
+
+YUI.Env.UA = YUI.Env.UA || {};
+
+YUI.Env.UA.android = YUI.Env.UA.android || {};
 
 /**
  *  Y.UA.ie is often relied upon.
  */
-Y.UA.ie = jQuery.browser.msie ? parseFloat(jQuery.browser.version):0 
+YUI.Env.UA.ie = jQuery.browser.msie ? parseFloat(jQuery.browser.version):0;
+
+/**
+ * Create an OU object to replace YUI and provide the Y object.
+ */
+    var OU = function() {
+        var i = 0,
+            Y = this,
+            args = arguments,
+            l = args.length,
+            instanceOf = function(o, type) {
+                return (o && o.hasOwnProperty && (o instanceof type));
+            },
+            gconf = (typeof YUI_config !== 'undefined') && YUI_config;
+    
+        if (!(instanceOf(Y, YUI))) {
+            Y = new YUI();
+        } else {
+            // set up the core environment
+            Y._init();
+    
+            /**
+            Master configuration that might span multiple contexts in a non-
+            browser environment. It is applied first to all instances in all
+            contexts.
+    
+            @example
+    
+                YUI.GlobalConfig = {
+                    filter: 'debug'
+                };
+    
+                YUI().use('node', function (Y) {
+                    // debug files used here
+                });
+    
+                YUI({
+                    filter: 'min'
+                }).use('node', function (Y) {
+                    // min files used here
+                });
+    
+            @property {Object} GlobalConfig
+            @global
+            @static
+            **/
+            if (YUI.GlobalConfig) {
+                Y.applyConfig(YUI.GlobalConfig);
+            }
+    
+            /**
+            Page-level config applied to all YUI instances created on the
+            current page. This is applied after `YUI.GlobalConfig` and before
+            any instance-level configuration.
+    
+            @example
+    
+                // Single global var to include before YUI seed file
+                YUI_config = {
+                    filter: 'debug'
+                };
+    
+                YUI().use('node', function (Y) {
+                    // debug files used here
+                });
+    
+                YUI({
+                    filter: 'min'
+                }).use('node', function (Y) {
+                    // min files used here
+                });
+    
+            @property {Object} YUI_config
+            @global
+            **/
+            if (gconf) {
+                Y.applyConfig(gconf);
+            }
+    
+            // bind the specified additional modules for this instance
+            if (!l) {
+                Y._setup();
+            }
+        }
+    
+        if (l) {
+            // Each instance can accept one or more configuration objects.
+            // These are applied after YUI.GlobalConfig and YUI_Config,
+            // overriding values set in those config files if there is a
+            // matching property.
+            for (; i < l; i++) {
+                Y.applyConfig(args[i]);
+            }
+    
+            Y._setup();
+        }
+    
+        Y.instanceOf = instanceOf;
+        
+        Y.on = function (e) {
+            console.log('on: getting element');
+            return $(e);
+        };
+    
+        return Y;
+    };
+
+//YUI.add = function (){console.log('new add'); //return YUI_ORIGINAL.add(arguments)
+//}; //YUI.yuioriginal.add;
+
+
+
+/**
+ * Placeholder for core YUI object. Use empty object if YUI doesn't exist.
+ */
+//Y.YUI = YUI ? YUI() : {};
+
+/**
+ *  Over ride node create. YUI adds specific data that it relies on later.
+ */
+/*
+Y.Node.create = function (s) {
+    
+}*/
+/**
+ *  Override node create Y.use.
+ *  @param string m List of modules to use
+ *  @param string f supplied function
+ */
+/*
+Y.use = function () {
+    var args = Array.prototype.slice.apply(arguments);
+    console.log('use arguments = '+args);
+    this.YUI.use(args);
+}*/
+
+
+
+
+
