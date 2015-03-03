@@ -562,7 +562,7 @@ EditorPluginButtons.prototype = {
             return;
         }
 
-        if (!(YUI.Env.UA.android || this.get('host').isActive())) {
+        if (!(OU.Env.UA.android || this.get('host').isActive())) {
             // We must not focus for Android here, even if the editor is not active because the keyboard auto-completion
             // changes the cursor position.
             // If we save that change, then when we restore the change later we get put in the wrong place.
