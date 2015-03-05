@@ -130,30 +130,3 @@ function RangySelectText (id, startquery, startoffset, endquery, endoffset) {
         s.setSingleRange(r);
         YUI.M.editor_ousupsub.getEditor(id)._selections = [r];
 }
-
-/**
- * Translate YUI methods and constants to standard javascript or jQuery equivalents. 
- * While we discover how to translate YUI to standard JS and jQuery we are minimising the changes
- * to the existing ousupsub codebase. 
- * 
- * To do this we are creating an empty YUI Y object and adding the properties and methods that 
- * OUsupsub requires that need to be translated. This keeps the changes solely to this file simplifying 
- * the process of updating the plugin to the latest Moodle and ATTO standards.
- * 
- * So the code will act as though it is using YUI but in reality it use which every JS implementation
- * is appropriate.
- */
-/**
- * Create Y if it doesn't exist.
- */
-var Y = Y || {};
-/**
- * Various utility functions
- */
-Y.UA = Y.UA || {};
-
-
-/**
- *  Y.UA.ie is often relied upon.
- */
-Y.UA.ie = jQuery.browser.msie ? parseFloat(jQuery.browser.version):0 
