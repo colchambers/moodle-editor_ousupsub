@@ -16,14 +16,14 @@ console.log('M.cfg.wwwroot = ' + M.cfg.wwwroot);
 
 //]]>
 </script>
-<script src="http://yui.yahooapis.com/3.17.2/build/yui/yui-min.js"></script>
+<script type="text/javascript" src="resources/yui/3.17.2/yui/yui.3.17.2.min.js"></script>
 <script type="text/javascript" src="resources/javascript-static.js"></script>
-<script src="resources/moodle-editor_ousupsub-editor.js"></script>
-<script src="resources/moodle-editor_ousupsub-manager.js"></script>
-<script src="resources/moodle-editor_ousupsub-plugin.js"></script>
-<script src="resources/moodle-editor_ousupsub-rangy.js"></script>
-<script src="resources/moodle-ousupsub_subscript-button.js"></script>
-<script src="resources/moodle-ousupsub_superscript-button.js"></script>
+<script type="text/javascript" src="resources/moodle-editor_ousupsub-editor.js"></script>
+<script type="text/javascript" src="resources/moodle-editor_ousupsub-manager.js"></script>
+<script type="text/javascript" src="resources/moodle-editor_ousupsub-plugin.js"></script>
+<script type="text/javascript" src="resources/moodle-editor_ousupsub-rangy.js"></script>
+<script type="text/javascript" src="resources/moodle-ousupsub_subscript-button.js"></script>
+<script type="text/javascript" src="resources/moodle-ousupsub_superscript-button.js"></script>
 
 <script id="firstthemesheet" type="text/css">/** Required in order to fix style inclusion problems in IE with YUI **/</script>
 
@@ -68,6 +68,9 @@ M.str = {"moodle":{"error":"Error","morehelp":"More help","changesmadereallygoaw
 
 <script type="text/javascript">
 //<![CDATA[
+var YUI_config = { 
+                     base: 'resources/yui/3.17.2/'
+                  }
 YUI().use('node', function(Y) {
 Y.use("moodle-editor_ousupsub-editor","moodle-ousupsub_subscript-button","moodle-ousupsub_superscript-button",function() {YUI.M.editor_ousupsub.createEditor(
 {"elementid":"id_description_editor","content_css":"","contextid":0,"language":"en","directionality":"ltr","plugins":[{"group":"style1","plugins":[{"name":"subscript","params":[]},{"name":"superscript","params":[]}]}],"pageHash":""});
