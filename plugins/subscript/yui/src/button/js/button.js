@@ -33,11 +33,24 @@
 
 Y.namespace('M.ousupsub_subscript').Button = Y.Base.create('button', Y.M.editor_ousupsub.EditorPlugin, [], {
     initializer: function() {
-        this.addBasicButton({
-            exec: 'subscript',
+//        this.addBasicButton({
+//            exec: 'subscript',
+//
+//            // Watch the following tags and add/remove highlighting as appropriate:
+//            tags: 'sub'
+//        });
+        
+        this._config = {
+                        exec: 'subscript',
 
-            // Watch the following tags and add/remove highlighting as appropriate:
-            tags: 'sub'
-        });
+                        // Watch the following tags and add/remove highlighting as appropriate:
+                        tags: 'sub',
+                     // Key code for the keyboard shortcut which triggers this button:
+                        keys: '73, 189, 40',
+
+                        icon: 'e/subscript',
+                        callback: this._applyTextCommand
+                    }
+        this.addButton(this._config);
     }
 });

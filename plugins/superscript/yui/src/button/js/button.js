@@ -22,6 +22,12 @@
 /**
  * @module     moodle-ousupsub_superscript-button
  */
+var COMPONENTNAME = 'ousupsub_superscript',
+    LOGNAME = 'ousupsub_superscript',
+    DELIMITERS = {
+        START: '<sup>',
+        END: '</sup>'
+    };
 
 /**
  * ousupsub text editor superscript plugin.
@@ -32,12 +38,56 @@
  */
 
 Y.namespace('M.ousupsub_superscript').Button = Y.Base.create('button', Y.M.editor_ousupsub.EditorPlugin, [], {
-    initializer: function() {
-        this.addBasicButton({
-            exec: 'superscript',
 
-            // Watch the following tags and add/remove highlighting as appropriate:
-            tags: 'sup'
-        });
-    }
+    /**
+     * The configuration object for the button.
+     *
+     * @property _config
+     * @type Object
+     * @default null
+     * @private
+     */
+    _config: null,
+
+    /**
+     * The selection object returned by the browser.
+     *
+     * @property _currentSelection
+     * @type Range
+     * @default null
+     * @private
+     */
+    _currentSelection: null,
+
+    initializer: function() {
+     // Add the button to the toolbar.
+//        this.addButton({
+//            icon: 'e/superscript',
+//            callback: this._testSelection
+//        });
+//        this.addBasicButton({
+        
+        this._config = {
+                        exec: 'superscript',
+
+                        // Watch the following tags and add/remove highlighting as appropriate:
+                        tags: 'sup',
+                     // Key code for the keyboard shortcut which triggers this button:
+                        keys: '73, 94, 38',
+
+                        icon: 'e/superscript',
+                        callback: this._applyTextCommand
+                    }
+        this.addButton(this._config);
+     // We need custom highlight logic for this button.
+//        this.get('host').on('atto:selectionchanged', function() {
+//            if (this._applySuperscript()) {
+//                this.highlightButtons();
+//            } else {
+//                this.unHighlightButtons();
+//            }
+//        }, this);
+    },
+
+    
 });
