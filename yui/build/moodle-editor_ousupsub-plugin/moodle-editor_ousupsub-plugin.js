@@ -449,6 +449,7 @@ EditorPluginButtons.prototype = {
         this.buttonNames.push(config.buttonName);
         this.buttons[config.buttonName] = button;
         this.buttonStates[config.buttonName] = this.ENABLED;
+        
         return button;
     },
 
@@ -494,6 +495,39 @@ EditorPluginButtons.prototype = {
 
         // Return the newly created button.
         return this.addButton(config);
+    },
+
+    xxx_handle_key_press: function(config) {
+        var plugin = null;
+        if (config.icon === 'e/superscript') {
+            plugin = 'SUP';
+        } else if (config.icon === 'e/subscript') {
+        	plugin = 'SUB';
+       }
+       if (plugin === 'SUP') {
+       }
+       this.editor.on('keydown', function(e) {
+           //Cross browser event object.
+            var evt = window.event || e;
+            if (e.keyCode === 94) { // ^.
+                // 
+            }
+            if (e.keyCode === 13) { // Enter.
+                // do nothing.
+            }
+            if (e.keyCode === 38) { // Up arrow.
+                if(plugin === 'SUP') {
+                    // Go to superscript.
+                    // Trigger superscript editor.
+                }
+            }
+            if (e.keyCode === 40) { // Down arrow.
+                if(plugin === 'SUB') {
+                    // Go to subscript.
+                    // Trigger subscript editor.
+                }
+            }
+        }, this);
     },
 
     /**
@@ -849,8 +883,9 @@ EditorPluginButtons.prototype = {
             handler = callback;
 
         } else {
-            modifier = this._getDefaultMetaKey();
+            modifier = '';//this._getDefaultMetaKey();
             keys = this._getKeyEvent() + keyConfig + '+' + modifier;
+            keys = keyConfig;
             if (typeof this._primaryKeyboardShortcut[buttonName] === 'undefined') {
                 this._primaryKeyboardShortcut[buttonName] = this._getDefaultMetaKeyDescription(keyConfig);
             }

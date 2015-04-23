@@ -62,7 +62,7 @@ div.editor_ousupsub_toolbar button[disabled] {
 }
 
 .editor_ousupsub_toolbar button:active, .editor_ousupsub_toolbar button.highlight {
-    background-image: radial-gradient(ellipse at center, #ffffff 40%,#dfdfdf 100%);
+    background-image: radial-gradient(ellipse at center, #ffffff 40%,#D2691E 100%);
     background-color: #dfdfdf;
 }
 

@@ -1192,7 +1192,30 @@ EditorToolbarNav.prototype = {
                     this._setTabFocus(e.currentTarget);
                 }, '.' + CSS.TOOLBAR + ' button', this));
 
+        this._registerEventHandle(this._wrapper.delegate('key',
+                this._add_to_console,
+                'up:38,40',
+                '.' + CSS.TOOLBAR,
+                this));
+        console.log('setuptool navigation');
+
         return this;
+    },
+
+    _add_to_console : function (e) {
+    	console.log('called _add_to_console');
+    },
+    
+    _supsub_key_press : function (e) {
+        switch (e.type) {
+            case 'sup' :
+                this.writeSupString(e.target);
+                break;
+            case 'sub' :
+                this.writeSubString(e.target);
+                break;
+        }
+        e.preventDefault();
     },
 
     /**
@@ -1333,6 +1356,31 @@ EditorToolbarNav.prototype = {
         return this;
     }
 };
+
+//Y.Event.define('dragchange', {
+//    // Webkit and IE repeat keydown when you hold down arrow keys.
+//    // Opera links keypress to page scroll; others keydown.
+//    // Firefox prevents page scroll via preventDefault() on either
+//    // keydown or keypress.
+//    _event: (Y.UA.webkit || Y.UA.ie) ? 'keydown' : 'keypress',
+//
+//    _keys: {
+//        '38': 'previous', // Up arrow
+//        '40': 'next',     // Down arrow
+//    },
+//
+//    _keyHandler: function (e, notifier) {
+//        if (this._keys[e.keyCode]) {
+//            e.direction = this._keys[e.keyCode];
+//            notifier.fire(e);
+//        }
+//    },
+//
+//    on: function (node, sub, notifier) {
+//        sub._detacher = node.on(this._event, this._keyHandler,
+//                                this, notifier);
+//    }
+//}),
 
 Y.Base.mix(Y.M.editor_ousupsub.Editor, [EditorToolbarNav]);
 // This file is part of Moodle - http://moodle.org/

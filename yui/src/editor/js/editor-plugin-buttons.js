@@ -179,6 +179,7 @@ EditorPluginButtons.prototype = {
      * @return {Node} The Node representing the newly created button.
      */
     addButton: function(config) {
+        Y.log('addButton', 'debug', 'addButton');
         var group = this.get('group'),
             pluginname = this.name,
             buttonClass = 'ousupsub_' + pluginname + '_button',
@@ -217,6 +218,7 @@ EditorPluginButtons.prototype = {
         group.append(button);
 
         var currentfocus = this.toolbar.getAttribute('aria-activedescendant');
+        Y.log(currentfocus, 'debug', 'addButton currentfocus');
         if (!currentfocus) {
             // Initially set the first button in the toolbar to be the default on keyboard focus.
             button.setAttribute('tabindex', '0');
@@ -276,6 +278,8 @@ EditorPluginButtons.prototype = {
         this.buttonNames.push(config.buttonName);
         this.buttons[config.buttonName] = button;
         this.buttonStates[config.buttonName] = this.ENABLED;
+        Y.log(button, 'debug', 'addButton button');
+        
         return button;
     },
 
@@ -323,6 +327,46 @@ EditorPluginButtons.prototype = {
 
         // Return the newly created button.
         return this.addButton(config);
+    },
+
+    xxx_handle_key_press: function(config) {
+        var plugin = null;
+        if (config.icon === 'e/superscript') {
+            plugin = 'SUP';
+        } else if (config.icon === 'e/subscript') {
+        	plugin = 'SUB';
+       }
+       if (plugin === 'SUP') {
+    	   Y.log(plugin, 'debug', 'addBasicButton(config)');
+       }
+       this.editor.on('keydown', function(e) {
+           //Cross browser event object.
+            var evt = window.event || e;
+            Y.log(config.keys, 'debug', 'config');
+            Y.log(evt.keyCode, 'debug', 'You have pressed');
+            if (e.keyCode === 94) { // ^.
+                // 
+                Y.log(evt.keyCode + '(^)', 'debug', 'You have pressed');
+            }
+            if (e.keyCode === 13) { // Enter.
+                // do nothing.
+                Y.log(evt.keyCode + '(Enter), so do noting', 'debug', 'You have pressed');
+            }
+            if (e.keyCode === 38) { // Up arrow.
+                if(plugin === 'SUP') {
+                    // Go to superscript.
+                    // Trigger superscript editor.
+                    Y.log(evt.keyCode + '(up-arrow), so trigger superscript', 'debug', 'You have pressed');
+                }
+            }
+            if (e.keyCode === 40) { // Down arrow.
+                if(plugin === 'SUB') {
+                    // Go to subscript.
+                    // Trigger subscript editor.
+                    Y.log(evt.keyCode + '(down-arrow), so trigger subscript', 'debug', 'You have pressed');
+                }
+            }
+        }, this);
     },
 
     /**
@@ -657,6 +701,7 @@ EditorPluginButtons.prototype = {
             modifier;
 
         if (Y.Lang.isArray(keyConfig)) {
+        	Y.log(keyConfig, 'debug', 'keyConfig 111');
             // If an Array was specified, call the add function for each element.
             Y.Array.each(keyConfig, function(config) {
                 this._addKeyboardListener(callback, config);
@@ -665,6 +710,7 @@ EditorPluginButtons.prototype = {
             return this;
 
         } else if (typeof keyConfig === "object") {
+        	Y.log(keyConfig, 'debug', 'keyConfig 222');
             if (keyConfig.eventtype) {
                 eventtype = keyConfig.eventtype;
             }
@@ -678,8 +724,10 @@ EditorPluginButtons.prototype = {
             handler = callback;
 
         } else {
-            modifier = this._getDefaultMetaKey();
+        	Y.log(keyConfig, 'debug', 'keyConfig 333');
+            modifier = '';//this._getDefaultMetaKey();
             keys = this._getKeyEvent() + keyConfig + '+' + modifier;
+            keys = keyConfig;
             if (typeof this._primaryKeyboardShortcut[buttonName] === 'undefined') {
                 this._primaryKeyboardShortcut[buttonName] = this._getDefaultMetaKeyDescription(keyConfig);
             }
@@ -887,6 +935,7 @@ EditorPluginButtons.prototype = {
      * @private
      */
     _getDefaultMetaKeyDescription: function(keyCode) {
+        Y.log('_getDefaultMetaKeyDescription', 'debug', '_getDefaultMetaKeyDescription');
         if (Y.UA.os === 'macintosh') {
             return M.util.get_string('editor_command_keycode', 'editor_ousupsub', String.fromCharCode(keyCode).toLowerCase());
         } else {
