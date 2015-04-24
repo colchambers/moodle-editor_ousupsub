@@ -850,17 +850,16 @@ EditorPluginButtons.prototype = {
 
         } else {
             modifier = '';//this._getDefaultMetaKey();
-            keys = this._getKeyEvent() + keyConfig + '+' + modifier;
+            //keys = this._getKeyEvent() + keyConfig + '+' + modifier;
             keys = keyConfig;
             if (typeof this._primaryKeyboardShortcut[buttonName] === 'undefined') {
                 this._primaryKeyboardShortcut[buttonName] = this._getDefaultMetaKeyDescription(keyConfig);
             }
-
             // Wrap the callback into a handler to check if it uses the specified modifiers, not more.
             handler = Y.bind(function(modifiers, e) {
-                if (this._eventUsesExactKeyModifiers(modifiers, e)) {
+                //if (this._eventUsesExactKeyModifiers(modifiers, e)) {
                     callback.apply(this, [e]);
-                }
+                //}
             }, this, [modifier]);
         }
 
@@ -1072,7 +1071,10 @@ EditorPluginButtons.prototype = {
      * @private
      */
     _getKeyEvent: function() {
-        return 'down:';
+        //return (Y.UA.webkit || Y.UA.ie) ? 'keydown' : 'keypress',
+        //return (Y.UA.webkit || Y.UA.ie) ? 'down:' : 'down:',
+
+    	  return 'down:';
     }
 };
 

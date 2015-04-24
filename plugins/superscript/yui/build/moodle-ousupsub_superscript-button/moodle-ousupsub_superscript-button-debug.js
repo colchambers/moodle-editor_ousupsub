@@ -39,7 +39,7 @@ Y.namespace('M.ousupsub_superscript').Button = Y.Base.create('button', Y.M.edito
             exec: 'superscript',
 
             // Key code (up arrow) for the keyboard shortcut which triggers this button:
-            keys: '38',
+            keys: ['38',  '94'],
 
             // Watch the following tags and add/remove highlighting as appropriate:
             tags: 'sup'

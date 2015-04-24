@@ -38,8 +38,8 @@ Y.namespace('M.ousupsub_subscript').Button = Y.Base.create('button', Y.M.editor_
         this.addBasicButton({
             exec: 'subscript',
 
-            // Key code (down arrow) for the keyboard shortcut which triggers this button:
-            keys: '40',
+            // Key codes (down-arrow, underscore) for the keyboard shortcut which triggers this button:
+            keys: ['40', '95'],
 
             // Watch the following tags and add/remove highlighting as appropriate:
             tags: 'sub'
