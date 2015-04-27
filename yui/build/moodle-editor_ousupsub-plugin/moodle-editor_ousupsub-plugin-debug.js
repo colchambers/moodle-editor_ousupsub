@@ -833,7 +833,7 @@ EditorPluginButtons.prototype = {
         if (Y.Lang.isArray(keyConfig)) {
             // If an Array was specified, call the add function for each element.
             Y.Array.each(keyConfig, function(config) {
-                this._addKeyboardListener(callback, config);
+                this._addKeyboardListener(callback, config, buttonName);
             }, this);
 
             return this;
@@ -861,10 +861,18 @@ EditorPluginButtons.prototype = {
             }
             // Wrap the callback into a handler to check if it uses the specified modifiers, not more.
             handler = Y.bind(function(modifiers, e) {
-                //if (this._eventUsesExactKeyModifiers(modifiers, e)) {
+               	if (buttonName === 'ousupsub_superscript_button_superscript') {
+                    if ((keys === '40') || (keys === '95')) {
+                        return;
+                    }
                     callback.apply(this, [e]);
-                    Y.log(r, 'debug', 'e');
-                //}
+                } else if (buttonName === 'ousupsub_subscript_button_subscript') {
+                    Y.log(buttonName, 'debug', 'sub');
+                    if ((keys === '38') || (keys === '94')) {
+                        return;
+                    }
+                    callback.apply(this, [e]);
+                }
             }, this, [modifier]);
         }
 
@@ -1079,9 +1087,6 @@ EditorPluginButtons.prototype = {
      * @private
      */
     _getKeyEvent: function() {
-        //return (Y.UA.webkit || Y.UA.ie) ? 'keydown' : 'keypress',
-        //return (Y.UA.webkit || Y.UA.ie) ? 'down:' : 'down:',
-
     	  return 'down:';
     }
 };
