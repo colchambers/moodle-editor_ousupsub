@@ -1214,8 +1214,14 @@ EditorPluginButtons.prototype = {
             if (parentNode == container ) {
                 continue;
             }
-            if (parentNode.firstChild == node && parentNode.nodeName.toLowerCase() == name) {
+            if (parentNode.firstChild == node && parentNode.lastChild == node && 
+                            parentNode.nodeName.toLowerCase() == name) {
                 removeParent = true;
+            }
+            
+            if (!removeParent && node && parentNode.nodeName.toLowerCase() == name) {
+                removeParent = true;
+                this._splitParentNode(parentNode, name);
             }
             this._removeNodesByName(node, name);
 
@@ -1267,6 +1273,34 @@ EditorPluginButtons.prototype = {
             to.appendChild(node);
         }
         from.remove();
+    },
+
+    /**
+     * Split the parent node into two with the node with the given name in the middle.
+     *
+     * Can't use other dom methods like querySelectorAll because they don't return text elements.
+     * @method _splitParentNode
+     * @private
+     * @return void.
+     */
+    _splitParentNode: function(container_node, name) {
+        var nodes = [], node, nodeToAppend;
+        for (var i = 0; i < container_node.childNodes.length; i++) {
+            nodes[i] = container_node.childNodes[i];
+        }
+
+        for (i = 0; i < nodes.length; i++) {
+            node = nodes[i];
+            if (node.nodeName.toLowerCase() == name) {
+                nodeToAppend = node.firstChild;
+//                container_node.parentNode.appendChild(node.firstChild, container_node);
+//                continue;
+            } else {
+                nodeToAppend = document.createElement(name);
+                nodeToAppend.appendChild(node);
+            }
+            container_node.parentNode.appendChild(nodeToAppend, container_node);
+        }
     },
 
     /**

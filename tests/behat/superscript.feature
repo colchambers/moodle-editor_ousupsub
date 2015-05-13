@@ -24,3 +24,12 @@ Feature: ousupsub superscript button
     And I click on "Superscript" "button"
     Then I should see "Helicopter" in the "Input" ousupsub editor
     
+    # Apply superscript again
+    When I select the range "'',3,'',5" in the "Input" ousupsub editor
+    And I click on "Superscript" "button"
+    Then I should see "Hel<sup>ic</sup>opter" in the "Input" ousupsub editor
+    
+    # Select outside sup tags. Click button
+    When I select the range "0,3,2,0" in the "Input" ousupsub editor
+    And I click on "Superscript" "button"
+    Then I should see "Helicopter" in the "Input" ousupsub editor

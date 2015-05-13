@@ -5,14 +5,17 @@
 
 
 var testcases = [
+{input: "<sup>1<sup>2</sup>3</sup>", expected: "<sup>1</sup>2<sup>3</sup>"}, // Nested matching sup tag.
                  {input: "<sup id=\"yui12345\">1</sup>", expected: "<sup>1</sup>"},
                  {input: "&nbsp;", expected: " "},
-                 {input: "<sup>1 </sup>2", expected: "<sup>1</sup> 2"}, // Space for end sup tag.
-                 {input: "<sub>1 </sub>2", expected: "<sub>1</sub> 2"}, // Space for end sub tag.
+                 {input: "<sup>1 </sup>2", expected: "<sup>1</sup> 2"}, // Space before end sup tag.
+                 {input: "<sub>1 </sub>2", expected: "<sub>1</sub> 2"}, // Space before end sub tag.
                  {input: "<span><sup>12</sup></span>", expected: "<sup>12</sup>"},
                  {input: "<sup>12</sup><sup>34</sup>", expected: "<sup>1234</sup>"},
                  {input: "<sup>12</sup> <sup>34</sup>", expected: "<sup>12 34</sup>"}, // Space between matching tags.
                  {input: "<sub>12</sub> <sub>34</sub>", expected: "<sub>12 34</sub>"}, // Space between matching tags.
+                 {input: "<sup>1<sup>2</sup>3</sup>", expected: "<sup>1</sup>2<sup>3</sup>"}, // Nested matching sup tag.
+                 {input: "<sub>1<sub>2</sub>3</sub>", expected: "<sub>1</sub>2<sub>3</sub>"}, // Nested matching sub tag.
                  {input: "<sup><sup>12</sup></sup>", expected: "12"},
                  {input: "1<sup>2</sup>3<sup>4</sup>5", expected: "1<sup>2</sup>3<sup>4</sup>5"},
                  {input: "<sup><sub>12</sub></sup>", expected: "<sup>12</sup>"},
