@@ -34,3 +34,12 @@ Feature: ousupsub superscript button
     # Verify button 40(_) removes superscript
     And I press the key "40" in the "Input" ousupsub editor
     Then I should see "Helicopter" in the "Input" ousupsub editor
+
+    # Apply superscript to a string, delete it and start a new string.
+    When I set the field "Input" to "H"
+    And I select the text in the "Input" ousupsub editor
+    And I click on "Superscript" "button"
+    And I press the key "46" in the "Input" ousupsub editor
+    Then I should see "" in the "Input" ousupsub editor
+    And I press the key "72" in the "Input" ousupsub editor
+    Then I should see "h" in the "Input" ousupsub editor

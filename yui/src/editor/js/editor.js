@@ -363,6 +363,7 @@ Y.extend(Editor, Y.Base, {
      */
     setupAutomaticPolling: function() {
         this._registerEventHandle(this.editor.on(['keyup', 'cut'], this.updateOriginal, this));
+        this._registerEventHandle(this.editor.on(['keyup'], this.cleanEditorHTMLSimple, this));
         this._registerEventHandle(this.editor.on('paste', this.pasteCleanup, this));
 
         // Call this.updateOriginal after dropped content has been processed.

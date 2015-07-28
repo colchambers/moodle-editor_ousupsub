@@ -80,6 +80,42 @@ EditorClean.prototype = {
     },
 
     /**
+     * Clean the HTML content of the editor.
+     *
+     * @method cleanEditorHTML
+     * @chainable
+     */
+    cleanEditorHTMLSimple: function() {
+     // Using saveSelection as it produces a more consistent experience.
+        var selection = window.rangy.saveSelection();
+
+        // Update the content.
+        this.editor.set('innerHTML', this._cleanHTMLSimple(this.editor.get('innerHTML')));
+     // Restore the selection, and collapse to end.
+        window.rangy.restoreSelection(selection);
+        return this;
+    },
+
+    /**
+     * Clean the specified HTML content and remove any content which could cause issues.
+     *
+     * @method _cleanHTML
+     * @private
+     * @param {String} content The content to clean
+     * @return {String} The cleaned HTML
+     */
+    _cleanHTMLSimple: function(content) {
+        // Removing limited things that can break the page or a disallowed, like unclosed comments, style blocks, etc.
+
+        var rules = [
+            //Remove empty spans, but not ones from Rangy.
+            {regex: /<span(?![^>]*?rangySelectionBoundary[^>]*?)[^>]*>(.+)<\/span>/gi, replace: "$1"}
+        ];
+
+        return this._filterContentWithRules(content, rules);
+    },
+
+    /**
      * Clean the specified HTML content and remove any content which could cause issues.
      *
      * @method _cleanHTML
@@ -156,7 +192,7 @@ EditorClean.prototype = {
             // Remove empty spans, but not ones from Rangy.
             {regex: /<span(?![^>]*?rangySelectionBoundary[^>]*?)[^>]*>(&nbsp;|\s)*<\/span>/gi, replace: ""},
             {regex: /<span(?![^>]*?rangySelectionBoundary[^>]*?)[^>]*>[\s\S]*?([\s\S]*?)<\/span>/gi, replace: "$1"},
-
+            
             // Remove empty sup and sub tags that appear after pasting text.
             {regex: /<sup[^>]*>(&nbsp;|\s)*<\/sup>/gi, replace: ""},
             {regex: /<sub[^>]*>(&nbsp;|\s)*<\/sub>/gi, replace: ""}
