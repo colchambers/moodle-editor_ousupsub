@@ -1257,12 +1257,13 @@ EditorClean.prototype = {
      * @chainable
      */
     cleanEditorHTMLSimple: function() {
-     // Using saveSelection as it produces a more consistent experience.
+        // Using saveSelection as it produces a more consistent experience.
         var selection = window.rangy.saveSelection();
 
         // Update the content.
         this.editor.set('innerHTML', this._cleanHTMLSimple(this.editor.get('innerHTML')));
-     // Restore the selection, and collapse to end.
+
+        // Restore the selection, and collapse to end.
         window.rangy.restoreSelection(selection);
         return this;
     },
