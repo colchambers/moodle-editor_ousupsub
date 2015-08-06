@@ -1606,10 +1606,10 @@ EditorClean.prototype = {
                 return; // Do nothing.
             } else if (tag === 'superscript' && command === 'subscript') {
                 command = 'superscript';
-            }  else if (tag === 'subscript' && command === 'superscript') {
+            } else if (tag === 'subscript' && command === 'superscript') {
                 command = 'subscript';
             }
-            
+
             if (!this.pluginEnabled(command)) {
                 return;
             }
@@ -1653,12 +1653,16 @@ EditorClean.prototype = {
     getCursorTag: function() {
         var tag = 'text';
         var selection = rangy.getSelection();
+        var nodeName = selection.focusNode.nodeName.toLowerCase();
+        var parentNodeName = selection.focusNode.parentNode.nodeName.toLowerCase();
 
-        if (selection.focusNode.nodeName.toLowerCase() === 'sup' ||
-                    selection.focusNode.parentNode.nodeName.toLowerCase() === 'sup') {
+        var childNodeName = '';
+        if (selection.focusNode.childNodes && selection.focusNode.childNodes[selection.focusOffset-1]) {
+            childNodeName = selection.focusNode.childNodes[selection.focusOffset-1].nodeName.toLowerCase();
+        }
+        if (nodeName === 'sup' || parentNodeName === 'sup' || childNodeName === 'sup') {
             tag = 'superscript';
-        } else if (selection.focusNode.nodeName.toLowerCase() === 'sub' ||
-                    selection.focusNode.parentNode.nodeName.toLowerCase() === 'sub') {
+        } else if (nodeName === 'sub' || parentNodeName === 'sub' || childNodeName === 'sub') {
             tag = 'subscript';
         }
         return tag;
