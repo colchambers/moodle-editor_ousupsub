@@ -11,8 +11,12 @@ Feature: ousupsub superscript button
     And I select the text in the "Input" ousupsub editor
     And I click on "Superscript" "button"
     # Delete the text
-    And I press the key "46" in the "Input" ousupsub editor
+    And I press the "backspace" key in the "Input" ousupsub editor
     Then I should see "" in the "Input" ousupsub editor
+
+    And I press the "backspace" key in the "Input" ousupsub editor
+    And I press the "backspace" key in the "Input" ousupsub editor
     # Type h
-    And I press the key "72" in the "Input" ousupsub editor
-    Then I should see "h" in the "Input" ousupsub editor
+    # And I press the key "72" in the "Input" ousupsub editor
+    And I enter the text "H" in the "Input" ousupsub editor
+    Then I should see "H" in the raw html of the "Input" ousupsub editor

@@ -127,18 +127,16 @@ class behat_editor_ousupsub extends behat_base {
 
         $editorid = $this->find_field($fieldlocator)->getAttribute('id');
 
-        // Trigger the key press through javascript.
-        // The clibpoardData object is not created correctly in chrome. Pass our own.
+        // Get the value through javascript.
         $js = $this->get_js_update_textarea();
         $js .= $this->get_js_get_raw_editor_html();
-        $js .= $this->get_js_character_codes_by_index();
         $js .= '
     return GetRawEditorHTML("'.$editorid.'");';
         $returnedText = $this->getSession()->evaluateScript($js);
 
         if ($returnedText !== $text) {
             throw new ExpectationException("The field '" . $fieldlocator .
-                    "' does not contain the text '" . $text . "' in it\s raw html. It contains '" . $returnedText . "'.", $this->getSession());
+                    "' does not contain the text '" . $text . "' in its raw html. It contains '" . $returnedText . "'.", $this->getSession());
         }
     }
 
@@ -437,6 +435,41 @@ class behat_editor_ousupsub extends behat_base {
     }
 
     /**
+     * Trigger document.execCommand on an ousupsub field.
+     *
+     * @Given /^I trigger the execcommand "([^"]*)" in the "([^"]*)" ousupsub editor$/
+     * @throws ElementNotFoundException Thrown by behat_base::find
+     * @param string $keys
+     * @param string $field
+     */
+    public function trigger_execcommand_in_the_ousupsub_editor($command, $fieldlocator) {
+        // NodeElement.keyPress simply doesn't work.
+        if (!$this->running_javascript()) {
+            throw new coding_exception('Editing contents requires javascript.');
+        }
+        // We delegate to behat_form_field class, it will
+        // guess the type properly.
+        $field = behat_field_manager::get_form_field_from_label($fieldlocator, $this);
+
+        if (!method_exists($field, 'get_value')) {
+            throw new coding_exception('Field does not support the get_value function.');
+        }
+
+        $editorid = $this->find_field($fieldlocator)->getAttribute('id');
+
+        // Trigger the key press through javascript.
+        $js = '
+    function TriggerCommandBehat(id, command) {
+    document.execCommand(command, false, null);
+    // Update the textarea text from the contenteditable div we just changed.
+    UpdateTextArea(id);
+}
+    TriggerCommandBehat("'.$editorid.'", "'.$command.'");';
+        $js = $this->get_js_update_textarea() . $js;
+        $this->getSession()->executeScript($js);
+    }
+
+    /**
      * Enter text in a stand-alone ousupsub field.
      *
      * @Given /^I enter the text "([^"]*)" in the "([^"]*)" ousupsub editor$/
@@ -607,9 +640,21 @@ function SelectAndClickFirstButtonBehat (id) {
      *
      * @Given /^I press the "([^"]*)" key in the "([^"]*)" ousupsub editor$/
      */
-    public function i_press_arrow_key_in_the_ousupsub_edito($key, $fieldlocator) {
+    public function i_press_key_in_the_ousupsub_edito($key, $fieldlocator) {
         $keycode = 0;
+        $steps = array();
         switch ($key) {
+            case 'backspace':
+                $steps[] = new Given('I trigger the execcommand "delete" in the "Input" ousupsub editor');
+                $keycode = "'keypress', 8";
+                break;
+            case 'delete':
+                return array(new Given('I trigger the execcommand "forwardDelete" in the "Input" ousupsub editor'));
+                break;
+            case 'up arrow': $keycode = 38;
+                break;
+            case 'down arrow': $keycode = 40;
+                break;
             case 'left arrow': $keycode = 37;
                 break;
             case 'right arrow': $keycode = 39;
@@ -618,7 +663,8 @@ function SelectAndClickFirstButtonBehat (id) {
                 $keycode = 40;
                 break;
         }
-        return array(new Given('I press the key "' . $keycode . '" in the "Input" ousupsub editor'));
+        $steps[] = new Given('I press the key "' . $keycode . '" in the "Input" ousupsub editor');
+        return $steps;
     }
 
     /**
